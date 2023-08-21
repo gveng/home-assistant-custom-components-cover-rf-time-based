@@ -372,19 +372,20 @@ class CoverTimeBased(CoverEntity, RestoreEntity):
 
     async def set_known_action(self, **kwargs):
         """We want to do a few things when we get a position"""
-        action = kwargs[ATTR_ACTION]
-        if action not in ["open","close","stop"]:
-          raise ValueError("action must be one of open, close or cover.")
-        if action == "stop":
-          self._handle_stop()
-          return
-        if action == "open":
-          self.tc.start_travel_up()
-          self._target_position = 100
-        if action == "close":
-          self.tc.start_travel_down()
-          self._target_position = 0
-        self.start_auto_updater()
+        if (self._target_position == 0 or self._target_position == 100):   #jump396
+            action = kwargs[ATTR_ACTION]
+            if action not in ["open","close","stop"]:
+              raise ValueError("action must be one of open, close or cover.")
+            if action == "stop":
+              self._handle_stop()
+              return
+            if action == "open":
+              self.tc.start_travel_up()
+              self._target_position = 100
+            if action == "close":
+              self.tc.start_travel_down()
+              self._target_position = 0
+            self.start_auto_updater()
 
     async def set_known_position(self, **kwargs):
         """We want to do a few things when we get a position"""
